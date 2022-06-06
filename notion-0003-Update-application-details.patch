@@ -1,0 +1,38 @@
+From 22b77bc7c49868dd133c4584a0db0c0e7f255507 Mon Sep 17 00:00:00 2001
+From: tinywrkb <tinywrkb@gmail.com>
+Date: Wed, 1 Jun 2022 22:11:24 +0300
+Subject: [PATCH 3/8] Update application details
+
+---
+ package.json | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/package.json b/package.json
+index d84ae1e..b241d88 100644
+--- a/package.json
++++ b/package.json
+@@ -1,7 +1,7 @@
+ {
+-  "name": "Notion",
+-  "author": "Notion Labs, Inc",
+-  "version": "2.0.27",
++  "name": "notion-app-enhanced",
++  "author": "Notion Repackaged",
++  "version": "2.0.27-1",
+   "private": true,
+   "description": "Notion",
+   "dependencies": {
+@@ -33,5 +33,7 @@
+   "files": [
+     "*.js",
+     "*.html"
+-  ]
+-}
+\ No newline at end of file
++  ],
++  "homepage": "https://github.com/jamezrin/notion-repackaged",
++  "repository": "https://github.com/jamezrin/notion-repackaged"
++}
+-- 
+2.36.0
+

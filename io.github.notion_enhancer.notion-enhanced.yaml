@@ -1,0 +1,274 @@
+app-id: io.github.notion_enhancer.notion-enhanced
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+base: org.electronjs.Electron2.BaseApp
+base-version: '21.08'
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.node16
+command: notion-enhanced
+finish-args:
+  - --device=dri
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+  - --filesystem=xdg-music
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-videos
+  - --own-name=org.mpris.MediaPlayer2.chromium.*
+  - --persist=.notion-enhancer
+  - --require-version=1.8.2
+  - --share=ipc
+  - --share=network
+  - --socket=pulseaudio
+  - --socket=x11
+  - --system-talk-name=org.freedesktop.UPower
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - '*.a'
+  - '*.la'
+
+build-options:
+  append-path: /app/sdk/node/bin
+  env:
+    NPM_PACKAGES: /app
+    npm_config_nodedir: /usr/lib/sdk/node16
+
+modules:
+  - name: node
+    buildsystem: simple
+    build-commands:
+        # sdk symlink to avoid having to update PATH in multiple modules
+      - install -dm755 ${FLATPAK_DEST}/sdk
+      - ln -s ${npm_config_nodedir} ${FLATPAK_DEST}/sdk/node
+    cleanup:
+      - '*'
+
+  - name: dos2unix
+    no-autogen: true
+    make-install-args:
+      - prefix=${FLATPAK_DEST}
+    sources:
+      - type: archive
+        url: https://waterlan.home.xs4all.nl/dos2unix/dos2unix-7.4.3.tar.gz
+        sha256: b68db41956daf933828423aa30510e00c12d29ef5916e715e8d4e694fe66ca72
+    cleanup:
+      - '*'
+
+  - name: p7zip
+    no-autogen: true
+    make-args:
+      - 7za
+    make-install-args:
+      - DEST_DIR=/
+      - DEST_HOME=${FLATPAK_DEST}
+      - DEST_MAN=${FLATPAK_DEST}/share/man
+      - DEST_SHARE=${FLATPAK_DEST}/lib/${FLATPAK_ARCH}-linux-gnu/p7zip
+    sources:
+      - type: archive
+        url: https://github.com/jinfeihan57/p7zip/archive/eb1bbb0d0327a103850fec519015986e72a1ebf0.tar.gz
+        sha256: cecdaa7e2738ad4594ddddb0c568db1750b7a7ff8433961be8595033d444e3a7
+       #x-checker-data:
+       #  type: anitya
+       #  project-id: 2583
+       #  stable-only: true
+       #  versions:
+       #    '>': '17.04'
+       #  url-template: https://github.com/jinfeihan57/p7zip/archive/v$version/p7zip-$version.tar.gz
+    cleanup:
+      - '*'
+
+  - name: notion-enhancer
+    buildsystem: simple
+    build-options:
+      append-path: /app/sdk/node/bin:/run/build/notion-enhancer/node_modules/.bin
+      env:
+        XDG_CACHE_HOME: /run/build/notion-enhancer/flatpak-node/cache
+    build-commands:
+      - npm install --offline --cache=$FLATPAK_BUILDER_BUILDDIR/flatpak-node/npm-cache
+      - install -dm755 ${FLATPAK_DEST}/lib/node_modules/notion-enhancer
+      - |
+        shopt -s extglob
+        cp -r !(flatpak-node) ${FLATPAK_DEST}/lib/node_modules/notion-enhancer/
+      - ln -s ../lib/node_modules/notion-enhancer/bin.mjs ${FLATPAK_DEST}/bin/notion-enhancer
+    sources:
+      - type: git
+        url: https://github.com/notion-enhancer/desktop.git
+        tag: v0.11.0
+        commit: f417de519a0959943869e73fa0e4b1d425060ccf
+        disable-submodules: true
+       #x-checker-data:
+       #  type: json
+       #  url: https://api.github.com/repos/notion-enhancer/desktop/releases/latest
+       #  tag-query: .tag_name
+       #  version-query: $tag | sub("^v"; "")
+       #  timestamp-query: .published_at
+      # TODO: upstream should switch from git+ssh to https, https://github.com/flathub/flathub/issues/2466
+      - type: git
+        url: https://github.com/notion-enhancer/api.git
+        branch: dev
+        commit: 9815d73b9277e96864654a8d8dd48762039c9845
+        dest: insert/api
+      - type: git
+        url: https://github.com/notion-enhancer/repo.git
+        branch: dev
+        commit: 9c869179b39dc11e07d6b6200b3ebd8d344cde16
+        dest: insert/repo
+      - type: git
+        url: https://github.com/notion-enhancer/media.git
+        branch: main
+        commit: 2a0a17998385f1d86148b9213451b3a5deff6bae
+        dest: insert/media
+      - type: git
+        url: https://github.com/notion-enhancer/dep.git
+        branch: main
+        commit: 1a4762550fe185706be26678f734b0475066c3e4
+        dest: insert/dep
+      - type: file
+        path: enhancer-package-lock.json
+        dest-filename: package-lock.json
+      - enhancer-sources.json # flatpak-node-generator.py npm --xdg-layout -o enhancer-sources.json enhancer-package-lock.json
+      - type: patch
+        paths:
+          - enhancer-0001-Move-config-file-into-dedicated-folder.patch
+          - enhancer-0002-Notion-2.0.27-support.patch
+      - type: patch
+        paths:
+          - enhancer-repo-0001-Notion-2.0.27-support.patch
+        options:
+          - --directory=insert/repo
+    cleanup:
+      - '*'
+
+  - name: notion-enhanced
+    buildsystem: simple
+    build-options:
+      append-path: /app/sdk/node/bin:/run/build/notion-enhanced/node_modules/.bin
+      env:
+        XDG_CACHE_HOME: /run/build/notion-enhanced/flatpak-node/cache
+        npm_config_nodedir: /usr/lib/sdk/node16
+    build-commands:
+      - install -dm755 ${FLATPAK_DEST}/notion-enhanced
+      # enhance notion source
+      - mkdir -p node_modules
+      - ln -vs ./ app
+      - notion-enhancer apply -y --no-backup --path=./
+      - rm -vf app
+      # move notion-enhancer module to avoid it being deleted by npm
+      - mv -v node_modules/notion-enhancer shared/
+      - rmdir -v node_modules
+      # build app: install modules
+      - npm install --offline --cache=$FLATPAK_BUILDER_BUILDDIR/flatpak-node/npm-cache
+      # build app: patch
+     #- npx patch-package
+      # build app: package
+      - |
+        source flatpak-node/electron-builder-arch-args.sh
+        electron-builder --config=electron-builder.yaml $ELECTRON_BUILDER_ARCH_ARGS
+      # install package
+      - |
+        if [ ${FLATPAK_ARCH} == 'x86_64' ]; then
+          cp -r dist/linux-unpacked/* ${FLATPAK_DEST}/notion-enhanced/
+        else
+          cp -r dist/linux-arm64-unpacked/* ${FLATPAK_DEST}/notion-enhanced/
+        fi
+    sources:
+      - type: file
+        dest-filename: notion_setup.exe
+        url: https://desktop-release.notion-static.com/Notion%20Setup%202.0.27.exe
+        sha256: 72b5ef282b1ff857f1eef4694646d8fa890fedb7f9e723dc59e6a3e9bebb397e
+       #x-checker-data:
+       #  is-main-source: true
+       #  type: json
+       #  url: https://api.github.com/repos/notion-enhancer/notion-repackaged/releases/latest
+       #  version-query: .tag_name | sub("^v"; "") | sub("-.*$"; "")
+       #  url-query: '"https://desktop-release.notion-static.com/Notion%20Setup%20" + $version + ".exe"'
+      - type: shell
+        commands:
+          - 7za x notion_setup.exe -x'!resources/app/icon.*' -x'!resources/app/node_modules' -xr'!*.js.map' resources/app
+          - mv resources/app/* ./
+          - rmdir resources{/app,}
+          - rm -f notion_setup.exe
+          - find . -name '*.js' -exec dos2unix '{}' \;
+      - type: patch
+        paths:
+          - notion-0001-Apply-notion-enhancer-workarounds.patch
+          - notion-0002-Update-cld-to-2.7.0.patch
+          - notion-0003-Update-application-details.patch
+          - notion-0004-Avoid-building-better-sqlite3-from-source.patch
+          - notion-0005-Add-notion-enhancer-module-to-manifest.patch
+          - notion-0006-Add-electron-and-electron-builder-as-dev-depends.patch
+          - notion-0007-main-security.js-Disable-context-isolation.patch
+          - notion-0008-temp-main-createWindow.js-Enable-nodeIntegration.patch
+      - notion-sources.json # flatpak-node-generator.py npm --xdg-layout -o notion-sources.json notion-package-lock-redacted.json
+      - type: file
+        path: electron-builder.yaml
+      - type: file
+        path: notion-package.json
+        dest-filename: package.json
+      - type: file
+        path: notion-package-lock.json
+        dest-filename: package-lock.json
+
+# - name: notion-enhanced-bin
+#   buildsystem: simple
+#   build-commands:
+#     - install -dm755 ${FLATPAK_DEST}/notion-enhanced
+#     - bsdtar -Oxf notion-enhanced.deb 'data.tar*' | bsdtar -xf - --strip-components=3 -C ${FLATPAK_DEST}/notion-enhanced
+#       './opt/Notion Enhanced'
+#   sources:
+#     - type: file
+#       dest-filename: notion-enhanced.deb
+#       only-arches:
+#         - aarch64
+#       url: https://github.com/notion-enhancer/notion-repackaged/releases/download/v2.0.18-1/notion-app-enhanced_2.0.18-1_arm64.deb
+#       sha256: 120d7717468c9d08cc7bc4e44813fae4bc8080cbb8237a41eddfefea80a54ca9
+#       x-checker-data:
+#         type: json
+#         url: https://api.github.com/repos/notion-enhancer/notion-repackaged/releases/latest
+#         version-query: .tag_name | sub("^v"; "")
+#         url-query: '"https://github.com/notion-enhancer/notion-repackaged/releases/download/v" + $version + "/notion-app-enhanced_" + $version + "_arm64.deb"'
+#     - type: file
+#       dest-filename: notion-enhanced.deb
+#       only-arches:
+#         - x86_64
+#       url: https://github.com/notion-enhancer/notion-repackaged/releases/download/v2.0.18-1/notion-app-enhanced_2.0.18-1_amd64.deb
+#       sha256: b4c2b63eff8c93201ce6ddfef9b0cbd53a3fb7cec9fcd01e3a877d4a9c943bfc
+#       x-checker-data:
+#         is-main-source: true
+#         type: json
+#         url: https://api.github.com/repos/notion-enhancer/notion-repackaged/releases/latest
+#         version-query: .tag_name | sub("^v"; "")
+#         url-query: '"https://github.com/notion-enhancer/notion-repackaged/releases/download/v" + $version + "/notion-app-enhanced_" + $version + "_amd64.deb"'
+
+  - name: packaging
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 notion-enhanced -t ${FLATPAK_DEST}/bin/
+      - install -Dm755 stub_sandbox ${FLATPAK_DEST}/notion-enhanced/chrome-sandbox
+      - install -Dm644 ${FLATPAK_ID}.desktop -t ${FLATPAK_DEST}/share/applications/
+      - install -Dm644 ${FLATPAK_ID}.metainfo.xml -t ${FLATPAK_DEST}/share/metainfo/
+      - install -Dm644 ${FLATPAK_DEST}/lib/node_modules/notion-enhancer/insert/media/colour.svg ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps/${FLATPAK_ID}.svg
+      - |
+        for s in 16 32 48 128 256 512;do
+          install -Dm644 ${FLATPAK_DEST}/lib/node_modules/notion-enhancer/insert/media/colour-x${s}.png ${FLATPAK_DEST}/share/icons/hicolor/${s}x${s}/apps/${FLATPAK_ID}.png
+        done
+    sources:
+      - type: script
+        dest-filename: notion-enhanced
+        commands:
+          - export TMPDIR=$XDG_RUNTIME_DIR/app/$FLATPAK_ID
+          - exec zypak-wrapper /app/notion-enhanced/notion-app-enhanced "$@"
+      - type: script
+        dest-filename: stub_sandbox
+        commands:
+          - |
+            echo Stub sandbox ignoring command: $@
+            exit 1
+      - type: file
+        path: io.github.notion_enhancer.notion-enhanced.desktop
+      - type: file
+        path: io.github.notion_enhancer.notion-enhanced.metainfo.xml

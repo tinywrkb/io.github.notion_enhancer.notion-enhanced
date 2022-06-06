@@ -1,0 +1,24 @@
+From 7ea5a18a826664fd69d588f64f26aece527a4ae0 Mon Sep 17 00:00:00 2001
+From: tinywrkb <tinywrkb@gmail.com>
+Date: Wed, 1 Jun 2022 22:19:04 +0300
+Subject: [PATCH 5/8] Add notion-enhancer module to manifest
+
+---
+ package.json | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/package.json b/package.json
+index 3dc05b5..6f724ff 100644
+--- a/package.json
++++ b/package.json
+@@ -20,6 +20,7 @@
+     "linkifyjs": "3.0.1",
+     "lodash": "4.17.15",
+     "md5": "2.3.0",
++    "notion-enhancer": "file:shared/notion-enhancer",
+     "notion-intl": "file:shared/notion-intl",
+     "patch-package": "6.4.7",
+     "react": "16.10.2",
+-- 
+2.36.0
+

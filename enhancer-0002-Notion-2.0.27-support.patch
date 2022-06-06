@@ -1,0 +1,46 @@
+From 3b503720fb86478a1660a8b138a02d451cf027a5 Mon Sep 17 00:00:00 2001
+From: tinywrkb <tinywrkb@gmail.com>
+Date: Mon, 6 Jun 2022 20:10:25 +0300
+Subject: [PATCH 2/2] Notion 2.0.27 support
+
+---
+ insert/electronApi.cjs | 7 ++++++-
+ insert/worker.cjs      | 3 ++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/insert/electronApi.cjs b/insert/electronApi.cjs
+index 03604c9..afc1c5f 100644
+--- a/insert/electronApi.cjs
++++ b/insert/electronApi.cjs
+@@ -134,7 +134,12 @@ globalThis.__enhancerElectronApi = {
+   version: require('notion-enhancer/package.json').version,
+   db,
+ 
+-  browser: isRenderer ? require('electron').remote.getCurrentWindow() : {},
++  browser: () => {
++    if (isRenderer) {
++      require("@electron/remote/main").enable(webContents);
++      return require('@electron/remote').getCurrentWindow();
++    }
++  },
+   webFrame: isRenderer ? require('electron').webFrame : {},
+   notionRequire: (path) => require(`../../${path}`),
+   notionPath: (path) => require('path').resolve(`${__dirname}/../../${path}`),
+diff --git a/insert/worker.cjs b/insert/worker.cjs
+index dbc5e4f..c9bedf4 100644
+--- a/insert/worker.cjs
++++ b/insert/worker.cjs
+@@ -35,8 +35,9 @@ module.exports.focusMenu = async () => {
+     width: windowState.width,
+     height: windowState.height,
+     webPreferences: {
++      contextIsolation: false,
+       nodeIntegration: true,
+-      enableRemoteModule: true,
++      enableRemoteModule: false,
+       session: session.fromPartition('persist:notion'),
+       preload: require('path').resolve(`${__dirname}/electronApi.cjs`),
+     },
+-- 
+2.36.0
+

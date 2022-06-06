@@ -1,0 +1,27 @@
+From a0f326ace4089b4ba74287e333bfb27b3881fffa Mon Sep 17 00:00:00 2001
+From: tinywrkb <tinywrkb@gmail.com>
+Date: Mon, 6 Jun 2022 19:40:51 +0300
+Subject: [PATCH 6/8] Add electron and electron-builder as dev depends
+
+---
+ package.json | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/package.json b/package.json
+index 6f724ff..27fb3c9 100644
+--- a/package.json
++++ b/package.json
+@@ -36,5 +36,9 @@
+     "*.html"
+   ],
+   "homepage": "https://github.com/jamezrin/notion-repackaged",
+-  "repository": "https://github.com/jamezrin/notion-repackaged"
++  "repository": "https://github.com/jamezrin/notion-repackaged",
++  "devDependencies": {
++    "electron": "^18.3.2",
++    "electron-builder": "^23.0.3"
++  }
+ }
+-- 
+2.36.0
+

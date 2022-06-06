@@ -1,0 +1,24 @@
+From 12ce0fdfc1eab2a1bacd9f26de143f7be384e05e Mon Sep 17 00:00:00 2001
+From: tinywrkb <tinywrkb@gmail.com>
+Date: Mon, 6 Jun 2022 19:47:50 +0300
+Subject: [PATCH 8/8] [temp] main/createWindow.js: Enable nodeIntegration
+
+---
+ main/createWindow.js | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/main/createWindow.js b/main/createWindow.js
+index 30eb9d1..efcd865 100644
+--- a/main/createWindow.js
++++ b/main/createWindow.js
+@@ -52,6 +52,7 @@ function createWindow(relativeUrl = "", args) {
+             session: electron_1.session.fromPartition(constants_1.electronSessionPartition),
+             enableRemoteModule: false,
+             contextIsolation: false,
++            nodeIntegration: true,
+             worldSafeExecuteJavaScript: true,
+         } });
+     const { window, warmed } = getNextWindow(windowCreationArgs);
+-- 
+2.36.0
+

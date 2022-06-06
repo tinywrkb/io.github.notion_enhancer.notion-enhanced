@@ -1,0 +1,17 @@
+appId: io.github.notion_enhancer.notion-enhancer
+productName: Notion Enhanched
+asar: false
+linux:
+  icon: app/img/icons
+  executableName: notion-app-enhanced
+  category: Office;Utility;
+  maintainer: jaime@jamezrin.name'
+  target:
+    - target: dir
+protocols:
+  - name: Notion
+    schemes:
+      - notion
+files:
+  filter:
+    - '!flatpak-node'

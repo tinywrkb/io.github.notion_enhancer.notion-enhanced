@@ -1,0 +1,62 @@
+From 3aeebd124b70f187b5d270fc0c693623bc416657 Mon Sep 17 00:00:00 2001
+From: tinywrkb <tinywrkb@gmail.com>
+Date: Wed, 1 Jun 2022 22:08:46 +0300
+Subject: [PATCH 1/8] Apply notion-enhancer workarounds
+
+---
+ main/autoUpdater.js | 2 +-
+ main/main.js        | 4 ++--
+ renderer/preload.js | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/main/autoUpdater.js b/main/autoUpdater.js
+index add945f..b293a55 100644
+--- a/main/autoUpdater.js
++++ b/main/autoUpdater.js
+@@ -98,7 +98,7 @@ function initializeAutoUpdater() {
+                 error: (0, logglyHelpers_1.convertErrorToLog)(error),
+             });
+         }
+-        else if (error.message.indexOf("/opt/notion-app/app.asar") !== -1) {
++        else if (process.platform === "linux") {
+             void loggly_1.loggly.log({
+                 level: "info",
+                 from: "autoUpdater",
+diff --git a/main/main.js b/main/main.js
+index d61ddf5..72f7e42 100644
+--- a/main/main.js
++++ b/main/main.js
+@@ -126,7 +126,7 @@ async function handleReady() {
+         return;
+     }
+     let relativeUrl;
+-    if (process.platform === "win32") {
++    if (process.platform !== "darwin") {
+         const { argv } = process;
+         const url = argv.find(arg => arg.startsWith(`${config_1.default.protocol}:`));
+         if (url) {
+@@ -219,7 +219,7 @@ electron_1.app.on("open-url", (event, url) => {
+ });
+ if (electron_1.app.requestSingleInstanceLock()) {
+     electron_1.app.on("second-instance", (_event, argv, workingDirectory) => {
+-        if (process.platform === "win32") {
++        if (process.platform !== "darwin") {
+             const url = argv.find(arg => arg.startsWith(`${config_1.default.protocol}:`));
+             const urlPath = url && makeRelativeUrl(url);
+             handleActivate(urlPath);
+diff --git a/renderer/preload.js b/renderer/preload.js
+index 8deb44b..f3c5afd 100644
+--- a/renderer/preload.js
++++ b/renderer/preload.js
+@@ -443,7 +443,7 @@ const electronApi = {
+         const currentWindow = remote.getCurrentWindow();
+         return rendererIpc.invokeMainHandler("notion:ready", currentWindow.id);
+     },
+-    sqliteServerEnabled: true,
++    sqliteServerEnabled: false,
+ };
+ window["__electronApi"] = electronApi;
+ window["__isElectron"] = true;
+-- 
+2.36.0
+

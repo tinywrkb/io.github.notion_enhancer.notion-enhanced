@@ -1,0 +1,25 @@
+From 474f9f3a078cda29d13073741331e1f615810ff4 Mon Sep 17 00:00:00 2001
+From: tinywrkb <tinywrkb@gmail.com>
+Date: Wed, 1 Jun 2022 22:10:39 +0300
+Subject: [PATCH 2/8] Update cld to 2.7.0
+
+---
+ package.json | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/package.json b/package.json
+index 13b439d..d84ae1e 100644
+--- a/package.json
++++ b/package.json
+@@ -9,7 +9,7 @@
+     "@sentry/electron": "2.5.4",
+     "better-sqlite3": "git://github.com/makenotion/better-sqlite3.git#0d1ffa139d76625ab99d856bb3adc0c920ce609f",
+     "bufferutil": "4.0.3",
+-    "cld": "2.5.1",
++    "cld": "2.7.0",
+     "csp_evaluator": "1.1.0",
+     "electron-log": "4.1.1",
+     "electron-updater": "4.1.2",
+-- 
+2.36.0
+

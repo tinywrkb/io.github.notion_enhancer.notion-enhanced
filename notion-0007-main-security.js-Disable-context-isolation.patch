@@ -1,0 +1,24 @@
+From ce9fcba8e5eeb30e4d014a104e8c34229cfd5cf3 Mon Sep 17 00:00:00 2001
+From: tinywrkb <tinywrkb@gmail.com>
+Date: Mon, 6 Jun 2022 19:45:51 +0300
+Subject: [PATCH 7/8] main/security.js: Disable context isolation
+
+---
+ main/security.js | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/main/security.js b/main/security.js
+index 5f13965..7af94fb 100644
+--- a/main/security.js
++++ b/main/security.js
+@@ -46,6 +46,7 @@ electron_1.app.on("web-contents-created", (event, contents) => {
+             }
+         }
+         delete webPreferences.preload;
++        webPreferences.contextIsolation = false;
+         webPreferences.nodeIntegration = false;
+         webPreferences.webSecurity = true;
+         webPreferences.allowRunningInsecureContent = false;
+-- 
+2.36.0
+
