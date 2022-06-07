@@ -68,7 +68,7 @@ flatpak-builder \
   * [x] playful-purple
 
 ## Other issues
-* [ ] Some page icons are missings
+* [ ] Some page's icons are missings. Electron 18 specific issue, and likely will be fixed by an update to Notion.
 
 ## TODO
 * [ ] Replace homedir with app.getPath('appData'). [Reference](https://www.electronjs.org/docs/latest/api/app#appgetpathname)
