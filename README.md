@@ -1,26 +1,11 @@
-# TODO
+# Notion Enhanced Flatpak
 
-* [ ] document/script: notion's package.json fetching & patching
-* [ ] document/script: notion's package-lock.json generation
-* [ ] document/script: generated-sources generation
-* [ ] document/script: generation of redacted notion-package-lock.json
-* [ ] document/script: replace homedir with app.getPath('appData') https://www.electronjs.org/docs/latest/api/app#appgetpathname
-* [ ] packaging: disable broken modules
-* [ ] review use of ./helpers/notionIpc and update to ./mainIpc
+Here you can find Flatpak packaging for [Notion Enhanced](https://notion-enhancer.github.io/) to easily build and
+install the Electron Notion application with notion-enhancer.  
+The Flatpak app differs from the pre-built Notion Enhanced packages by including more recent releases of Notion and Electron.  
+This is a temporary solution, as upstream intend to submit the app to Flathub.org.
 
-## possible future breakage and references
-* [breaking changes](https://www.electronjs.org/docs/latest/breaking-changes)
-* [@electron.remote](https://github.com/electron/remote)
-* context isolation switch to true
-  * [tutorial/context-isolation](https://www.electronjs.org/docs/latest/tutorial/context-isolation)
-  * example solution: use contextBridge
-  * where? in electronApi.cjs, declaration of globalThis
-* [BrowserWindow](https://www.electronjs.org/docs/latest/api/browser-window)
-
-## electron18 generic issues
-* [ ] some page icons are missings
-
-## electron18 enhancements status
+## Enhancements status
 * [ ] group1
   * [ ] components // untested
   * [x] menu // notification fetching needs to be fixed, it's blocking menu creation
@@ -67,3 +52,22 @@
   * [x] pastel-dark
   * [x] pinky-boom
   * [x] playful-purple
+
+## Other issues
+* [ ] Some page icons are missings
+
+## TODO
+* [ ] Replace homedir with app.getPath('appData'). [Reference](https://www.electronjs.org/docs/latest/api/app#appgetpathname)
+* [ ] Disable broken enhancements
+* [ ] Disable auto-update code
+* [ ] Add documentation/script updates
+
+## Possible future breakage and references
+* [Breaking changes](https://www.electronjs.org/docs/latest/breaking-changes)
+* [@electron.remote](https://github.com/electron/remote)
+* context isolation switch to true
+  * [tutorial/context-isolation](https://www.electronjs.org/docs/latest/tutorial/context-isolation)
+  * example solution: use contextBridge
+  * where? electronApi.cjs, declaration of globalThis
+* [BrowserWindow](https://www.electronjs.org/docs/latest/api/browser-window)
+* `./helpers/notionIpc` changed to `./mainIpc`
