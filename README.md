@@ -5,6 +5,20 @@ install the Electron Notion application with notion-enhancer.
 The Flatpak app differs from the pre-built Notion Enhanced packages by including more recent releases of Notion and Electron.  
 This is a temporary solution, as upstream intend to submit the app to Flathub.org.
 
+## How to build and install
+* Clone this repository: `$ git clone https://github.com/tinywrkb/io.github.notion_enhancer.notion-enhanced.git`
+* Build into a Flatpak repo, and install with Flatpak Builder
+```
+flatpak-builder \
+  --install \
+  --user \
+  --force-clean \
+  --state-dir=flatpak-builder \
+  --repo=flatpak-repo \
+  flatpak-target \
+  io.github.notion_enhancer.notion-enhanced.yaml
+```
+
 ## Enhancements status
 * [ ] group1
   * [ ] components // untested
