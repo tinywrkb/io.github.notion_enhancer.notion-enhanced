@@ -19,6 +19,42 @@ flatpak-builder \
   io.github.notion_enhancer.notion-enhanced.yaml
 ```
 
+### How to update Notion and notion-enhanced sources
+
+* Enable online build
+  * Update `notion-*.patch` patches. It's very likely that the ones that changes `package.json` won't apply cleanly
+    after a Notion version bump.
+  * Uncomment lines with the comment `OFFLINE-BUILD`
+  * Comment out lines with the comment `OFFLINE-BUILD`
+  * Comment out sources used offline npm install. These are mentioned in the comments
+    * `*-sources.json`
+    * `*-package.json`
+    * `*-package-lock.json`
+  * Uncomment the `go-yq` module
+* Build the app with the flatpak-builder's `--keep-build-dirs` option
+* Copy the updated `*-package{,-lock}.json` files
+```
+FLATPAK_BUILDER_STATEDIR=
+cp ${FLATPAK_BUILDER_STATEDIR/build}/notion-enhancer/package.json enhancer-package.json
+cp ${FLATPAK_BUILDER_STATEDIR/build}/notion-enhancer/package-lock.json enhancer-package-lock.json
+cp ${FLATPAK_BUILDER_STATEDIR/build}/notion-enhanced/package.json notion-package.json
+cp ${FLATPAK_BUILDER_STATEDIR/build}/notion-enhanced/package-lock.json notion-package-lock.json
+```
+* Prepare `node-package-lock.json` for flatpak-node-generator
+```
+jq \
+  'del(.dependencies."notion-intl") |
+  del(.dependencies."notion-enhancer")' \
+  notion-package-lock.json \
+  > notion-package-lock-redacted.json
+```
+* Generate sources
+```
+flatpak-node-generator.py npm --xdg-layout -o enhancer-sources.json enhancer-package-lock.json
+flatpak-node-generator.py npm --xdg-layout -o notion-sources.json notion-package-lock-redacted.json
+```
+
+
 ## Enhancements status
 * [ ] group1
   * [ ] components // untested

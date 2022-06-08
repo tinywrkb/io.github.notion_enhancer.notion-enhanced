@@ -86,14 +86,48 @@ modules:
     cleanup:
       - '*'
 
+# - name: go-yq
+#   buildsystem: simple
+#   build-commands:
+#     - install -Dm755 yq -t ${FLATPAK_DEST}/bin/
+#   sources:
+#     - type: file
+#       dest-filename: yq
+#       only-arches:
+#         - aarch64
+#       url: https://github.com/mikefarah/yq/releases/download/v4.25.2/yq_linux_arm64
+#       sha256: dc58ef7f1651f5a8da6ded8d1ced99df933f9f511b102302c1502ba70350c527
+#      #x-checker-data:
+#      #  type: json
+#      #  url: https://api.github.com/repos/mikefarah/yq/releases/latest
+#      #  version-query: .tag_name | sub("^v"; "")
+#      #  url-query: '"https://github.com/mikefarah/yq/releases/download/v" + $version + "/yq_linux_arm64"'
+#     - type: file
+#       dest-filename: yq
+#       only-arches:
+#         - x86_64
+#       url: https://github.com/mikefarah/yq/releases/download/v4.25.2/yq_linux_amd64
+#       sha256: 042f7462ec8378f8b0d3bac85d1b1a063b63beef5d8e3826bb2377294116ae90
+#      #x-checker-data:
+#      #  type: json
+#      #  url: https://api.github.com/repos/mikefarah/yq/releases/latest
+#      #  version-query: .tag_name | sub("^v"; "")
+#      #  url-query: '"https://github.com/mikefarah/yq/releases/download/v" + $version + "/yq_linux_amd64"'
+
   - name: notion-enhancer
     buildsystem: simple
     build-options:
       append-path: /app/sdk/node/bin:/run/build/notion-enhancer/node_modules/.bin
+     #build-args:  # ONLINE-BUILD
+     #  - --share=network  # ONLINE-BUILD
       env:
         XDG_CACHE_HOME: /run/build/notion-enhancer/flatpak-node/cache
     build-commands:
-      - npm install --offline --cache=$FLATPAK_BUILDER_BUILDDIR/flatpak-node/npm-cache
+      # install modules (online): comment out enhancer-{sources,package-lock}.json
+     #- npm install  # ONLINE-BUILD
+     #- npm install --save-dev electron@18 electron-builder  # ONLINE-BUILD
+      # install modules (offline)
+      - npm install --offline --cache=$FLATPAK_BUILDER_BUILDDIR/flatpak-node/npm-cache  # OFFLINE-BUILD
       - install -dm755 ${FLATPAK_DEST}/lib/node_modules/notion-enhancer
       - |
         shopt -s extglob
@@ -152,6 +186,8 @@ modules:
     buildsystem: simple
     build-options:
       append-path: /app/sdk/node/bin:/run/build/notion-enhanced/node_modules/.bin
+     #build-args:  # ONLINE-BUILD
+     #  - --share=network  # ONLINE-BUILD
       env:
         XDG_CACHE_HOME: /run/build/notion-enhanced/flatpak-node/cache
         npm_config_nodedir: /usr/lib/sdk/node16
@@ -165,8 +201,10 @@ modules:
       # move notion-enhancer module to avoid it being deleted by npm
       - mv -v node_modules/notion-enhancer shared/
       - rmdir -v node_modules
-      # build app: install modules
-      - npm install --offline --cache=$FLATPAK_BUILDER_BUILDDIR/flatpak-node/npm-cache
+      # build app (online): install modules. comment out notion-{sources,-package{,-lock}}.json
+     #- npm install  # ONLINE-BUILD
+      # build app (offline): install modules
+      - npm install --offline --cache=$FLATPAK_BUILDER_BUILDDIR/flatpak-node/npm-cache  # OFFLINE-BUILD
       # build app: patch
      #- npx patch-package
       # build app: package
