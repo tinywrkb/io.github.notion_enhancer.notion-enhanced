@@ -55,6 +55,11 @@ modules:
       - type: archive
         url: https://waterlan.home.xs4all.nl/dos2unix/dos2unix-7.4.3.tar.gz
         sha256: b68db41956daf933828423aa30510e00c12d29ef5916e715e8d4e694fe66ca72
+       #x-checker-data:
+       #  type: anitya
+       #  project-id: 453
+       #  stable-only: true
+       #  url-template: https://waterlan.home.xs4all.nl/dos2unix/dos2unix-$version.tar.gz
     cleanup:
       - '*'
 
