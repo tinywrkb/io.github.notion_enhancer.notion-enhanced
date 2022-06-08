@@ -41,7 +41,7 @@ modules:
   - name: node
     buildsystem: simple
     build-commands:
-        # sdk symlink to avoid having to update PATH in multiple modules
+        # sdk symlink to avoid having to update PATH in multiple modules when bumping node's version
       - install -dm755 ${FLATPAK_DEST}/sdk
       - ln -s ${npm_config_nodedir} ${FLATPAK_DEST}/sdk/node
     cleanup:
@@ -192,6 +192,7 @@ modules:
        #  version-query: .tag_name | sub("^v"; "") | sub("-.*$"; "")
        #  url-query: '"https://desktop-release.notion-static.com/Notion%20Setup%20" + $version + ".exe"'
       - type: shell
+        # extract sources from notion's installer before applying patches
         commands:
           - 7za x notion_setup.exe -x'!resources/app/icon.*' -x'!resources/app/node_modules' -xr'!*.js.map' resources/app
           - mv resources/app/* ./
@@ -208,7 +209,7 @@ modules:
           - notion-0006-Add-electron-and-electron-builder-as-dev-depends.patch
           - notion-0007-main-security.js-Disable-context-isolation.patch
           - notion-0008-temp-main-createWindow.js-Enable-nodeIntegration.patch
-      - notion-sources.json # flatpak-node-generator.py npm --xdg-layout -o notion-sources.json notion-package-lock-redacted.json
+      - notion-sources.json # flatpak-node-generator.py npm --xdg-layout -o notion-sources.json notion-package-lock.json
       - type: file
         path: electron-builder.yaml
       - type: file
@@ -250,6 +251,7 @@ modules:
 #         url-query: '"https://github.com/notion-enhancer/notion-repackaged/releases/download/v" + $version + "/notion-app-enhanced_" + $version + "_amd64.deb"'
 
   - name: packaging
+    # common to notion-enahnced source build and binary repackaging modules
     buildsystem: simple
     build-commands:
       - install -Dm755 notion-enhanced -t ${FLATPAK_DEST}/bin/
