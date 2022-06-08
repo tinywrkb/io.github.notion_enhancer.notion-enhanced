@@ -22,7 +22,7 @@ flatpak-builder \
 ## Enhancements status
 * [ ] group1
   * [ ] components // untested
-  * [x] menu // notification fetching needs to be fixed, it's blocking menu creation
+  * [x] menu
   * [x] theming
 * [ ] group2
   * [ ] font-chooser // untested
