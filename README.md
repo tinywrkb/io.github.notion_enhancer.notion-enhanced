@@ -30,7 +30,6 @@ flatpak-builder \
     * `*-sources.json`
     * `*-package.json`
     * `*-package-lock.json`
-  * Uncomment the `go-yq` module
 * Build the app with the flatpak-builder's `--keep-build-dirs` option
 * Copy the updated `*-package{,-lock}.json` files
 ```

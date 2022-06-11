@@ -86,34 +86,6 @@ modules:
     cleanup:
       - '*'
 
-# - name: go-yq
-#   buildsystem: simple
-#   build-commands:
-#     - install -Dm755 yq -t ${FLATPAK_DEST}/bin/
-#   sources:
-#     - type: file
-#       dest-filename: yq
-#       only-arches:
-#         - aarch64
-#       url: https://github.com/mikefarah/yq/releases/download/v4.25.2/yq_linux_arm64
-#       sha256: dc58ef7f1651f5a8da6ded8d1ced99df933f9f511b102302c1502ba70350c527
-#      #x-checker-data:
-#      #  type: json
-#      #  url: https://api.github.com/repos/mikefarah/yq/releases/latest
-#      #  version-query: .tag_name | sub("^v"; "")
-#      #  url-query: '"https://github.com/mikefarah/yq/releases/download/v" + $version + "/yq_linux_arm64"'
-#     - type: file
-#       dest-filename: yq
-#       only-arches:
-#         - x86_64
-#       url: https://github.com/mikefarah/yq/releases/download/v4.25.2/yq_linux_amd64
-#       sha256: 042f7462ec8378f8b0d3bac85d1b1a063b63beef5d8e3826bb2377294116ae90
-#      #x-checker-data:
-#      #  type: json
-#      #  url: https://api.github.com/repos/mikefarah/yq/releases/latest
-#      #  version-query: .tag_name | sub("^v"; "")
-#      #  url-query: '"https://github.com/mikefarah/yq/releases/download/v" + $version + "/yq_linux_amd64"'
-
   - name: notion-enhancer
     buildsystem: simple
     build-options:
