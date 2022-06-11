@@ -24,7 +24,7 @@ flatpak-builder \
 * Enable online build
   * Update `notion-*.patch` patches. It's very likely that the ones that changes `package.json` won't apply cleanly
     after a Notion version bump.
-  * Uncomment lines with the comment `OFFLINE-BUILD`
+  * Uncomment lines with the comment `ONLINE-BUILD`
   * Comment out lines with the comment `OFFLINE-BUILD`
   * Comment out sources used offline npm install. These are mentioned in the comments
     * `*-sources.json`
@@ -53,7 +53,6 @@ flatpak-node-generator.py npm --xdg-layout -o enhancer-sources.json enhancer-pac
 flatpak-node-generator.py npm --xdg-layout -o notion-sources.json notion-package-lock-redacted.json
 ```
 
-
 ## Enhancements status
 * [ ] group1
   * [ ] components // untested
@@ -65,7 +64,7 @@ flatpak-node-generator.py npm --xdg-layout -o notion-sources.json notion-package
 * [ ] group3: windowing
   * [ ] always-on-top // ? need to test in a DE
   * [ ] integrated-titlebar // broken? need to test in a DE, no titlebar in sway "electron.browser.on is not a function"
-  * [x] tabs // mostly working, hit an issue where all the window is gray out after creating a new tab (bypass preview was enabled)
+  * [x] tabs // mostly working, hit an issue where the entire window was grayed out after creating a new tab (bypass-preview was enabled)
   * [x] tray
   * [x] view-scale
 * [ ] group4
