@@ -1,13 +1,13 @@
 # Notion Enhanced Flatpak
 
-Here you can find Flatpak packaging for [Notion Enhanced](https://notion-enhancer.github.io/) to easily build and
-install the Electron Notion application with notion-enhancer.  
-The Flatpak app differs from the pre-built Notion Enhanced packages by including more recent releases of Notion and Electron.  
-This is a temporary solution, as upstream intend to submit the app to Flathub.org.
+Here you can find Flatpak packaging of [Notion Enhanced](https://notion-enhancer.github.io/) for easily building and
+installing the Electron Notion application with notion-enhancer.  
+This Flatpak app differs from the pre-built Notion Enhanced app by including more recent releases of Notion and Electron.  
+This is a temporary solution, as upstream intends to submit the app to Flathub.org.
 
 ## How to build and install
 * Clone this repository: `$ git clone https://github.com/tinywrkb/io.github.notion_enhancer.notion-enhanced.git`
-* Build into a Flatpak repo, and install with Flatpak Builder
+* Build into a Flatpak repo, and install with Flatpak Builder.
 ```
 flatpak-builder \
   --install \
@@ -22,16 +22,16 @@ flatpak-builder \
 ### How to update Notion and notion-enhanced sources
 
 * Enable online build
-  * Update `notion-*.patch` patches. It's very likely that the ones that changes `package.json` won't apply cleanly
-    after a Notion version bump.
-  * Uncomment lines with the comment `ONLINE-BUILD`
-  * Comment out lines with the comment `OFFLINE-BUILD`
-  * Comment out sources used offline npm install. These are mentioned in the comments
+  * Update `notion-*.patch` patches. It's very likely that the ones that changes `package.json` won't be able to be
+    applied cleanly after a Notion version bump.
+  * Uncomment lines with the comment `ONLINE-BUILD`.
+  * Comment out lines with the comment `OFFLINE-BUILD`.
+  * Comment out sources used by offline npm install. These are mentioned in the comments.
     * `*-sources.json`
     * `*-package.json`
     * `*-package-lock.json`
-* Build the app with the flatpak-builder's `--keep-build-dirs` option
-* Copy the updated `*-package{,-lock}.json` files
+* Build the app with flatpak-builder's `--keep-build-dirs` option.
+* Copy the updated `*-package{,-lock}.json` files. See description of the statedir in `man:flatpak-builder(1)`.
 ```
 FLATPAK_BUILDER_STATEDIR=
 cp ${FLATPAK_BUILDER_STATEDIR/build}/notion-enhancer/package.json enhancer-package.json
@@ -39,7 +39,7 @@ cp ${FLATPAK_BUILDER_STATEDIR/build}/notion-enhancer/package-lock.json enhancer-
 cp ${FLATPAK_BUILDER_STATEDIR/build}/notion-enhanced/package.json notion-package.json
 cp ${FLATPAK_BUILDER_STATEDIR/build}/notion-enhanced/package-lock.json notion-package-lock.json
 ```
-* Prepare `node-package-lock.json` for flatpak-node-generator
+* Prepare `node-package-lock.json` for flatpak-node-generator.
 ```
 jq \
   'del(.dependencies."notion-intl") |
@@ -47,7 +47,7 @@ jq \
   notion-package-lock.json \
   > notion-package-lock-redacted.json
 ```
-* Generate sources
+* Generate sources.
 ```
 flatpak-node-generator.py npm --xdg-layout -o enhancer-sources.json enhancer-package-lock.json
 flatpak-node-generator.py npm --xdg-layout -o notion-sources.json notion-package-lock-redacted.json
